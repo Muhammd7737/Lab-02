@@ -1,9 +1,12 @@
 package com.example.listcity
 
+import android.R.attr.onClick
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -130,8 +133,9 @@ fun CityListScreen(
 
             Button(
                 onClick = {
-                    if (newCityName.isNotBlank()) {
-                        onDeleteCity(newCityName)
+                    selectedCity?.let {
+                        onDeleteCity(it)
+                        selectedCity = null
                     }
                 }
             ) {
@@ -144,18 +148,22 @@ fun CityListScreen(
         // items(cities) loops through the city list and
         // creates one UI row for each city.
         items(cities) { city ->
-            CityRow(city = city)
+            CityRow(city = city,
+                onClick = {selectedCity = city})
            }
         }
     }
 }
 
 @Composable
-fun CityRow(city: String) {
+fun CityRow(city: String, onClick: () -> Unit) {
     Text(
         text = city,
         fontSize = 28.sp,
-        modifier = Modifier
+
+        modifier = Modifier.clickable {
+            onClick()
+        }
             .fillMaxWidth()
             .padding(horizontal = 18.dp, vertical = 14.dp)
     )
