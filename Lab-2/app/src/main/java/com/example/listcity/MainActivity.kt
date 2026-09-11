@@ -133,6 +133,9 @@ fun CityListScreen(
 
             Button(
                 onClick = {
+                    if (newCityName.isNotBlank()) {
+                        onDeleteCity(newCityName)
+                    }
                     selectedCity?.let {
                         onDeleteCity(it)
                         selectedCity = null
