@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
                     CityListScreen(
                         cities = cityRepository.cities,
                         onAddCity = { cityRepository.addCity(it) },
+                        onDeleteCity = {cityRepository.deleteExistingCity(it)},
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -66,7 +67,7 @@ class CityRepository {
         _cities.add(city)
     }
 
-    fun deleteCity(city: String) {
+    fun deleteExistingCity(city: String) {
         _cities.remove(city)
     }
 
@@ -95,17 +96,21 @@ fun CityListScreen(
     // this screen receives from MainActivity
     cities: List<String>,
     onAddCity: (String) -> Unit,
+    onDeleteCity: (String) -> Unit,
     // modifier: Modifier = Modifier allows layout information,
     // such as padding, to be passed into this screen
     modifier: Modifier = Modifier
 ) {
     var newCityName by remember { mutableStateOf(value = "") }
 
+    var selectedCity by remember { mutableStateOf<String?>(null) }
+
     Column(modifier = modifier.fillMaxSize()) {
         Row(modifier = Modifier.padding(all = 16.dp)) {
             OutlinedTextField(
                 value = newCityName,
                 onValueChange = { newCityName = it },
+
                 label = { Text("City name") },
                 modifier = Modifier.weight(1f)
             )
@@ -121,6 +126,16 @@ fun CityListScreen(
                 }
             ) {
                 Text("Add City")
+            }
+
+            Button(
+                onClick = {
+                    if (newCityName.isNotBlank()) {
+                        onDeleteCity(newCityName)
+                    }
+                }
+            ) {
+                Text("Delete City")
             }
         }
 
